@@ -1,91 +1,60 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <Navbar :scrolled="isScrolled" :isLoggedIn="isLoggedIn" @logout="handleLogout" />
+  <main class="main-content">
+    <CategoryList v-if="routesWithCategoryList.includes(route.name)" />
+    <CartButton />
+    <router-view></router-view>
+  </main>
 </template>
 
+<script setup>
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import Navbar from './components/Navbar.vue';
+import CategoryList from './components/CategoryList.vue';
+import CartButton from './components/CartButton.vue';
+
+const store = useStore();
+const isScrolled = ref(false);
+const route = useRoute();
+
+const isLoggedIn = computed(() => store.getters.isLoggedIn);
+
+const routesWithCategoryList = ['Products', 'ProductCategory'];
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50;
+};
+
+const handleLogout = () => {
+  store.commit('logout');
+  localStorage.removeItem('user'); // Remove user from localStorage
+  localStorage.removeItem('accessToken'); // Remove access token from localStorage
+  store.commit('setLoggedIn', false); // Update the store
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+
+  const user = localStorage.getItem('user');
+  if (user) {
+    store.commit('setUser', JSON.parse(user));
+    store.commit('setLoggedIn', true);
+    // store.commit('setUserId',user.id);
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.main-content {
+  padding-top: 60px;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+router-link {
+  text-decoration: none;
 }
 </style>
