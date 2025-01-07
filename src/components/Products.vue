@@ -7,8 +7,8 @@
       <p>Showing {{ totalItemsShown }} / {{ totalProducts }}</p>
     </div>
     <div class="product-list">
-      <router-link 
-      class="product-item" 
+      <router-link
+      class="product-item"
       v-for="x in data" :key="x.id"
       :to="{name: 'ProductDetails', params: { productId: x.id }}">
         <div class="imgContainer">

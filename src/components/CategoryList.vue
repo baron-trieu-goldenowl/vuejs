@@ -4,9 +4,17 @@
       <div class="spinner-container" v-if="isLoading">
         <div class="spinner"></div>
       </div>
-     
+
+      <!-- Button for All Category -->
       <router-link
-        v-for="(category, index ) in data"
+        :to="{ name: 'Products' }"
+        class="category-name"
+      >
+        All Categories
+      </router-link>
+
+      <router-link
+        v-for="(category, index) in data"
         :key="index"
         :to="{ name: 'ProductCategory', params: { categoryName: category.slug } }"
         class="category-name"
@@ -26,7 +34,7 @@ export default {
   setup() {
     const data = ref([]);
     const isLoading = ref(false);
-     
+
     const fetchData = async () => {
       isLoading.value = true;
       try {

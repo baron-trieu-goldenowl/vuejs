@@ -3,21 +3,21 @@
     <div class="spinner-container" v-if="isLoading">
       <div class="spinner"></div>
     </div>
-    
+
     <div class="shownItem">
-      
+
       <h1 class="category-title"> {{ categoryName}}: {{ totalProducts }}</h1>
       <p>Showing {{ totalItemsShown }} / {{ totalProducts }}</p>
     </div>
     <div class="product-list">
-     <router-link v-for="x in data" 
+     <router-link v-for="x in data"
      :key="x.id"
      :to="{ name: 'ProductDetails', params: { productId: x.id } }"
      >
       <div class="product-item">
         <div class="imgContainer">
           <div v-if="loadingImages[x.id]" class="ImgSpinner"></div>
-          <img 
+          <img
             v-show="!loadingImages[x.id]"
             :src="x.thumbnail"
             alt="Product image"
@@ -32,8 +32,7 @@
       </div>
      </router-link>
     </div>
-  
-    
+
     <div class="shownItem">
       <p>Showing {{ totalItemsShown }} / {{ totalProducts }}</p>
     </div>
@@ -129,7 +128,7 @@ export default {
       currentPage.value = 1;  // Reset to the first page
       fetchData();
     });
-    
+
 
     return {
       data,
